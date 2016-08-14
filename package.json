@@ -1,0 +1,36 @@
+{
+  "name": "node-rest",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "main": "",
+  "author": "phaneendharm@yahoo.com",
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "body-parser": "^1.15.2",
+    "compression": "^1.6.2",
+    "connect": "^3.4.1",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^2.0.0",
+    "errorhandler": "^1.4.3",
+    "express": "^4.14.0",
+    "minimist": "^1.2.0",
+    "mongoose": "^4.5.7",
+    "morgan": "^1.7.0",
+    "multer": "^1.2.0",
+    "require-dir": "^0.3.0",
+    "response-time": "^2.3.1",
+    "winston": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.10.0"
+  },
+  "engines": {
+    "node": "0.8.4",
+    "npm": "1.1.49"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  }
+}
