@@ -5,6 +5,15 @@
 * NodeJs
 * MongoDB
 
+## Configurations
+
+Please change the configuration in '.env' file
+
+| Property | Value                          | Description                 |
+|----------|--------------------------------|-----------------------------|
+| PORT     | 8080                           | Port to run the node server |
+| MONGODB  | mongodb://localhost:27017/test | MongoDB connect string      |
+
 ##  Build
 
 ```
