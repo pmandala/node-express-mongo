@@ -2,12 +2,12 @@
 
 ## Requirements
 
-* NodeJs
+* NodeJS
 * MongoDB
 
 ## Configurations
 
-Please change the configuration in '.env' file
+Change the default configuration properties in '.env' file if needed.
 
 | Property | Value                          | Description                 |
 |----------|--------------------------------|-----------------------------|
@@ -23,43 +23,42 @@ npm install
 ## Starting Server
 
 ```
-node config/server.js
+node server.js
 ```
 
-## API
+## API EXAMPLES
 
-ALL USERS
+CREATE USER
+
+```
+curl -i  -H 'Accept: application/json' -H 'Content-Type : application/json' -X PUT \
+  -d '{"userId":"phaneendharm@yahoo.com" "firstName":"Phanee", "lastName":"Mandala"}'  http://localhost:8080/v1/api/users
+```
+
+GET ALL USERS
 
 ```
 curl -i -H 'Accept: application/json' -H 'Content-Type : application/json' -X GET \
   http://localhost:8080/v1/api/users
 ```
 
-CREATE USER
+FIND USER
 
 ```
-curl -i  -H 'Accept: application/json' -H 'Content-Type : application/json' -X PUT \
-  -d'{"firstName":"Apple", "lastName":"Mac"}'  http://localhost:8080/v1/api/users
+curl -i -H 'Accept: application/json' -H 'Content-Type : application/json' -X GET \
+http://localhost:8080/v1/api/users/phaneendharm@yahoo.com
 ```
 
 UPDATE USER
 
 ```
-curl -i -H 'Accept: application/json' -H 'Content-Type : application/json' -X POST \
-  -d'{"firstName":"Apple", "lastName":"Mac"}'  http://localhost:8080/v1/api/users/123
+curl -i  -H 'Accept: application/json' -H 'Content-Type : application/json' -X POST \
+  -d '{"userId":"phaneendharm@yahoo.com", "firstName":"Phani", "lastName":"Mandala"}' http://localhost:8080/v1/api/users/phaneendharm@yahoo.com
 ```
-
-CREATE USER
-
-```
-curl -i  -H 'Accept: application/json' -H 'Content-Type : application/json' -X PUT \
-  -d'{"firstName":"Apple", "lastName":"Mac"}'  http://localhost:8080/v1/api/users
-```
-
 
 DELETE USER
 
 ```
 curl -i -H 'Accept: application/json' -H 'Content-Type : application/json' -X GET \
-  http://localhost:8080/v1/api/users/123
+  http://localhost:8080/v1/api/users/phaneendharm@yahoo.com
 ```

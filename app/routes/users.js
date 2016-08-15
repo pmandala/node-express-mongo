@@ -2,11 +2,7 @@
 'use strict';
 
 var mongoose        = require('mongoose');
-mongoose.Promise    = require('bluebird');
 var User            = require('../models/user');
-
-mongoose.connect(process.env.MONGODB);
-var db = mongoose.connection;
 
 module.exports = function(router) {
 
@@ -26,6 +22,7 @@ module.exports = function(router) {
     // created new user
     console.log('creating the user...');
     var user = new User(req.body);
+    console.log(user);
     user.save(function(err) {
       if (err) {
         return next(err);
@@ -39,7 +36,7 @@ module.exports = function(router) {
   .get(function(req, res, next) {
     // Return user
     console.log('Getting a user...' + req.params.userId);
-    User.find({ userId: req.params.userId }, function(err, user) {
+    User.findOne({ userId: req.params.userId }, function(err, user) {
       if (err) {
         return next(err);
       }
@@ -54,11 +51,13 @@ module.exports = function(router) {
       if (err) {
         return next(err);
       }
-
+      
+      console.log(user);
       for (var prop in req.body) {
         user[prop] = req.body[prop];
       }
 
+      console.log(user);
       // save the movie
       user.save(function(err) {
         if (err) {
