@@ -1,0 +1,210 @@
+// config/server.js
+
+'use strict';
+
+//create an express application
+var express         = require('express');
+var app             = express();
+
+//express middleware
+var dotenv          = require('dotenv').config();
+var morgan          = require('morgan');
+var bodyParser      = require('body-parser');
+var methodOverride  = require('method-override');
+var cookieParser    = require('cookie-parser');
+var multer          = require('multer');
+var compression     = require('compression');
+var responseTime    = require('response-time');
+var errorhandler    = require('errorhandler');
+var logger          = require('winston');
+var routes          = require('require-dir')('./app/routes');
+
+//database connection
+var mongoose        = require('mongoose');
+mongoose.Promise    = require('bluebird');
+
+mongoose.connection.on('connected', function () {  
+  console.log('Mongoose default connection open to ' + process.env.MONGODB);
+}); 
+
+// If the connection throws an error
+mongoose.connection.on('error',function (err) {  
+  console.log('Mongoose default connection error: ' + err);
+  console.log('Terminationg server start up');
+  process.exit(0);
+}); 
+
+// When the connection is disconnected
+mongoose.connection.on('disconnected', function () {  
+  console.log('Mongoose default connection disconnected'); 
+});
+
+// If the Node process ends, close the Mongoose connection 
+process.on('SIGINT', function() {  
+  mongoose.connection.close(function () { 
+    console.log('Mongoose default connection disconnected through app termination'); 
+    process.exit(0); 
+  }); 
+}); 
+
+mongoose.connect(process.env.MONGODB);
+
+//express logger
+app.use(morgan('combined')); /* 'common', 'short', 'tiny', 'dev' */
+
+//cookies
+app.use(cookieParser());
+
+// bodyparser for application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({type: '*/*'}));
+app.use(methodOverride());
+
+//multipart file uploaded
+//app.use(multer({ dest: '/tmp/'}));
+
+// compress all responses
+//app.use(compression());
+
+//set X-Response-Time
+app.use(responseTime());
+
+//remove X-Powered-By
+app.disable('x-powered-by');
+
+//CORS & NOCACHE
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, api_key, Authorization, Origin, X-Requested-With, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, PUT, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+  res.header('Expires', '-1');
+  res.header('Pragma', 'no-cache');
+  next();
+});
+
+//root router for the server
+app.get('/', function (req, res) {
+  res.send('Server is running...')
+})
+
+app.use('/spec', express.static('spec'));
+
+// ROUTES
+var router = express.Router();
+
+// Initialize all routes
+logger.info('Initializing routes...');
+try{
+Object.keys(routes).forEach(function(routeName) {
+  logger.info('Processing routes... ' + routeName);
+  require('./app/routes/' + routeName)(router);
+});
+}
+catch(err){
+	console.log(err);
+}
+
+
+// REGISTER ROUTER
+app.use("/v1/api", router);
+
+
+// Error handler
+app.use(function(err, req, res, next) {
+console.log('ERROR HANDLER');
+console.error(err);
+  res.status(err.status || 500);
+  res.json({
+    code : err.status || 500,
+    message: err.message,
+    error: (app.get('env') === 'development' ? err : {})
+  });
+  //next(err);
+});
+
+
+// START THE SERVER
+var port = process.env.PORT || 8080;
+
+app.listen(port, function(){
+  console.log('Server started on port ' + port);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+app.get('/', function(req, res) {
+  console.log("Cookies: ", req.cookies)
+})
+
+app.use(express.static('public'));
+
+app.get('/index.htm', function (req, res) {
+   res.sendFile( __dirname + "/" + "index.htm" );
+})
+
+app.get('/auth', function (req, res) {
+
+   // Prepare output in JSON format
+   response = {
+       first_name:req.query.first_name,
+       last_name:req.query.last_name
+   };
+   console.log(response);
+   res.end(JSON.stringify(response));
+})
+
+app.post('/file_upload', function (req, res) {
+
+   console.log(req.files.file.name);
+   console.log(req.files.file.path);
+   console.log(req.files.file.type);
+
+   var file = __dirname + "/" + req.files.file.name;
+   fs.readFile( req.files.file.path, function (err, data) {
+        fs.writeFile(file, data, function (err) {
+         if( err ){
+              console.log( err );
+         }else{
+               response = {
+                   message:'File uploaded successfully',
+                   filename:req.files.file.name
+              };
+          }
+          console.log( response );
+          res.end( JSON.stringify( response ) );
+       });
+   });
+})
+
+*/
+
+/*
+https://www.sitepoint.com/creating-restful-apis-express-4/
+http://javabeat.net/expressjs-nodejs-mongoosejs/
+https://github.com/Walk4Muscle/Swagger-node-express3-sample
+https://stormpath.com/blog/build-nodejs-express-stormpath-app
+http://javabeat.net/expressjs-bootstrap/
+http://coenraets.org/blog/2012/10/nodecellar-sample-application-with-backbone-js-twitter-bootstrap-node-js-express-and-mongodb/
+*/
+
