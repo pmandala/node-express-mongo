@@ -32,7 +32,8 @@ CREATE USER
 
 ```
 curl -i  -H 'Accept: application/json' -H 'Content-Type : application/json' -X PUT \
-  -d '{"userId":"phaneendharm@yahoo.com" "firstName":"Phanee", "lastName":"Mandala"}'  http://localhost:8080/v1/api/users
+  -d 'userId'='phaneendharm@yahoo.com' -d 'firstName'='Phanee' -d 'lastName'='Mandala' \
+  http://localhost:8080/v1/api/users
 ```
 
 GET ALL USERS
@@ -53,7 +54,8 @@ UPDATE USER
 
 ```
 curl -i  -H 'Accept: application/json' -H 'Content-Type : application/json' -X POST \
-  -d '{"userId":"phaneendharm@yahoo.com", "firstName":"Phani", "lastName":"Mandala"}' http://localhost:8080/v1/api/users/phaneendharm@yahoo.com
+  -d 'firstName'='Phani', 'lastName'='Mandala' \
+  http://localhost:8080/v1/api/users/phaneendharm@yahoo.com
 ```
 
 DELETE USER
